@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+jinja2
+langdetect
+httpx
+sqlalchemy
+psycopg2-binary
+pytest
+pytest-asyncio
