@@ -392,9 +392,12 @@ async def main() -> None:
 
         CHECKPOINT_FILE.unlink(missing_ok=True)
         if quota_hit:
-            log.warning(f"Quota exhausted after {len(seeds)} seeds. Proceeding to yt-dlp with what we have.")
+            log.warning(f"Quota exhausted after {len(seeds)} seeds.")
         else:
             log.info(f"API phase done: {api_new} new videos from {len(seeds)} seeds")
+        return
+
+    # Everything below only runs via: python collect.py --crawl-only
 
     # Deduplicate seeds within this run
     seen: set[str] = set()
