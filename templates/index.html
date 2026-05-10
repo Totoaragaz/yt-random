@@ -433,6 +433,16 @@
     }
 
     let busy = false;
+    let prefetched = null;
+
+    async function prefetch() {
+      try {
+        const res = await fetch('/api/random');
+        prefetched = await res.json();
+      } catch (e) {
+        prefetched = null;
+      }
+    }
 
     function updatePrevBtn() {
       btnPrev.disabled = videoHistory.length === 0;
@@ -468,8 +478,8 @@
       shell.classList.add('out');
 
       try {
-        const res  = await fetch('/api/random');
-        const data = await res.json();
+        const data = prefetched ?? await fetch('/api/random').then(r => r.json());
+        prefetched = null;
         if (data.error) throw new Error(data.error);
 
         await new Promise(r => setTimeout(r, 300));
@@ -480,6 +490,7 @@
 
         applyVideoToDOM(data);
         shell.classList.remove('out');
+        setTimeout(prefetch, 3000);
       } catch (e) {
         window.location.href = '/';
       } finally {
