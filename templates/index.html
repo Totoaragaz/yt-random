@@ -249,6 +249,32 @@
       to   { transform: rotate(360deg); }
     }
 
+    .btn-prev {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(235, 215, 215, 0.25);
+      padding: clamp(10px, 1.2vw, 14px) clamp(14px, 1.6vw, 22px);
+      border-radius: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: clamp(0.82rem, 1.2vw, 1rem);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.1s;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn-prev:hover:not(:disabled) {
+      border-color: rgba(235, 215, 215, 0.4);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .btn-prev:disabled { opacity: 0.3; cursor: default; }
+
     .btn-yt {
       display: inline-flex;
       align-items: center;
@@ -305,6 +331,7 @@
       .btn-group { align-items: flex-start; width: 100%; }
       .btn-row { width: 100%; }
       .btn-next { flex: 1; justify-content: center; }
+      .prev-label { display: none; }
       .kbd-hint { display: none; }
       .subtitle { font-size: 1.15rem; }
     }
@@ -344,6 +371,7 @@
 
       <div class="btn-group">
         <div class="btn-row">
+          <button class="btn-prev" id="btnPrev" disabled>← <span class="prev-label">Previous</span></button>
           <button class="btn-next" id="btnNext">
             <svg class="shuffle-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -366,7 +394,7 @@
             Watch on YouTube
           </a>
         </div>
-        <div class="kbd-hint">press <kbd>Space</kbd> or <kbd>→</kbd> for next</div>
+        <div class="kbd-hint"><kbd>←</kbd> prev &nbsp; <kbd>→</kbd> <kbd>Space</kbd> next</div>
       </div>
     </div>
 
@@ -388,7 +416,16 @@
     const langTag = document.getElementById('langTag');
     const yearTag = document.getElementById('yearTag');
     const btnNext = document.getElementById('btnNext');
+    const btnPrev = document.getElementById('btnPrev');
     const btnYt   = document.getElementById('btnYt');
+
+    let currentVideo = {
+      id: '{{ video.id }}',
+      title: {{ video.title | tojson }},
+      language: '{{ video.language or "" }}',
+      search_date_window: '{{ video.search_date_window or "" }}'
+    };
+    const videoHistory = [];
 
     if (langTag && langTag.textContent.trim()) {
       const code = langTag.textContent.trim();
@@ -397,10 +434,36 @@
 
     let busy = false;
 
+    function updatePrevBtn() {
+      btnPrev.disabled = videoHistory.length === 0;
+    }
+
+    function applyVideoToDOM(data) {
+      frame.contentWindow.location.replace(`https://www.youtube.com/embed/${data.id}?autoplay=1`);
+      titleEl.textContent = data.title || '';
+      btnYt.href = `https://www.youtube.com/watch?v=${data.id}`;
+      document.title = data.title || 'ytrandom';
+
+      if (data.language) {
+        langTag.textContent = LANG[data.language] || data.language;
+        langTag.classList.remove('hidden');
+      } else {
+        langTag.classList.add('hidden');
+      }
+
+      if (data.search_date_window) {
+        yearTag.textContent = data.search_date_window.slice(0, 4);
+        yearTag.classList.remove('hidden');
+      } else {
+        yearTag.classList.add('hidden');
+      }
+    }
+
     async function loadNext() {
       if (busy) return;
       busy = true;
       btnNext.disabled = true;
+      btnPrev.disabled = true;
       btnNext.classList.add('spinning');
       shell.classList.add('out');
 
@@ -411,41 +474,50 @@
 
         await new Promise(r => setTimeout(r, 300));
 
-        frame.src = `https://www.youtube.com/embed/${data.id}?autoplay=1`;
-        titleEl.textContent = data.title || '';
-        btnYt.href = `https://www.youtube.com/watch?v=${data.id}`;
+        videoHistory.push(currentVideo);
+        if (videoHistory.length > 20) videoHistory.shift();
+        currentVideo = data;
 
-        if (data.language) {
-          langTag.textContent = LANG[data.language] || data.language;
-          langTag.classList.remove('hidden');
-        } else {
-          langTag.classList.add('hidden');
-        }
-
-        if (data.search_date_window) {
-          yearTag.textContent = data.search_date_window.slice(0, 4);
-          yearTag.classList.remove('hidden');
-        } else {
-          yearTag.classList.add('hidden');
-        }
-
+        applyVideoToDOM(data);
         shell.classList.remove('out');
       } catch (e) {
         window.location.href = '/';
       } finally {
         busy = false;
         btnNext.disabled = false;
+        updatePrevBtn();
         setTimeout(() => btnNext.classList.remove('spinning'), 500);
       }
     }
 
+    function loadPrev() {
+      if (busy || videoHistory.length === 0) return;
+      busy = true;
+      btnNext.disabled = true;
+      btnPrev.disabled = true;
+      shell.classList.add('out');
+
+      setTimeout(() => {
+        currentVideo = videoHistory.pop();
+        applyVideoToDOM(currentVideo);
+        shell.classList.remove('out');
+        busy = false;
+        btnNext.disabled = false;
+        updatePrevBtn();
+      }, 300);
+    }
+
     btnNext.addEventListener('click', loadNext);
+    btnPrev.addEventListener('click', loadPrev);
 
     document.addEventListener('keydown', e => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       if (e.key === ' ' || e.key === 'ArrowRight') {
         e.preventDefault();
         loadNext();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        loadPrev();
       }
     });
   </script>
