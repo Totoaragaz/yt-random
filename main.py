@@ -14,7 +14,7 @@ def get_random_video() -> dict | None:
     with engine.connect() as conn:
         row = conn.execute(
             text("""
-                SELECT id, title, channel_id, language, view_count
+                SELECT id, title, channel_id, language, view_count, search_date_window
                 FROM videos
                 ORDER BY RANDOM()
                 LIMIT 1
@@ -22,7 +22,15 @@ def get_random_video() -> dict | None:
         ).fetchone()
     if not row:
         return None
-    return {"id": row[0], "title": row[1], "channel_id": row[2], "language": row[3], "view_count": row[4]}
+    return {
+        "id": row[0], "title": row[1], "channel_id": row[2],
+        "language": row[3], "view_count": row[4], "search_date_window": row[5],
+    }
+
+
+def get_video_count() -> int:
+    with engine.connect() as conn:
+        return conn.execute(text("SELECT COUNT(*) FROM videos")).scalar() or 0
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -30,7 +38,11 @@ async def index(request: Request):
     video = get_random_video()
     if not video:
         return templates.TemplateResponse(request=request, name="empty.html", headers={"Cache-Control": "no-store"})
-    return templates.TemplateResponse(request=request, name="index.html", context={"video": video}, headers={"Cache-Control": "no-store"})
+    return templates.TemplateResponse(
+        request=request, name="index.html",
+        context={"video": video, "video_count": get_video_count()},
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 @app.get("/api/random")
