@@ -435,6 +435,12 @@
     let busy = false;
     let prefetched = null;
 
+    function decodeHTML(str) {
+      const txt = document.createElement('textarea');
+      txt.innerHTML = str;
+      return txt.value;
+    }
+
     async function prefetch() {
       try {
         const res = await fetch('/api/random');
@@ -450,9 +456,9 @@
 
     function applyVideoToDOM(data) {
       frame.contentWindow.location.replace(`https://www.youtube.com/embed/${data.id}?autoplay=1`);
-      titleEl.textContent = data.title || '';
+      titleEl.textContent = decodeHTML(data.title || '');
       btnYt.href = `https://www.youtube.com/watch?v=${data.id}`;
-      document.title = data.title || 'ytrandom';
+      document.title = decodeHTML(data.title) || 'ytrandom';
 
       if (data.language) {
         langTag.textContent = LANG[data.language] || data.language;
