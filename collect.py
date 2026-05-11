@@ -53,6 +53,23 @@ SCRAPE_HEADERS = {
 
 
 # ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def parse_duration(duration: str) -> int | None:
+    if not duration:
+        return None
+    m = re.match(r'P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?', duration)
+    if not m:
+        return None
+    days    = int(m.group(1) or 0)
+    hours   = int(m.group(2) or 0)
+    minutes = int(m.group(3) or 0)
+    seconds = int(m.group(4) or 0)
+    return days * 86400 + hours * 3600 + minutes * 60 + seconds
+
+
+# ---------------------------------------------------------------------------
 # Distance / diversity
 # ---------------------------------------------------------------------------
 
@@ -339,6 +356,77 @@ async def crawl_seed(
 
 
 # ---------------------------------------------------------------------------
+# Enrich phase — fill view_count, duration_seconds, and fix corrupted titles
+# ---------------------------------------------------------------------------
+
+async def enrich_videos(engine, client: httpx.AsyncClient) -> None:
+    sql = text("SELECT id FROM videos WHERE view_count IS NULL ORDER BY collected_at DESC")
+    with engine.begin() as conn:
+        rows = conn.execute(sql).fetchall()
+
+    video_ids = [row[0] for row in rows]
+    if not video_ids:
+        log.info("Enrich: nothing to enrich")
+        return
+
+    log.info(f"Enrich: {len(video_ids)} videos to enrich")
+
+    updated = 0
+    call_count = 0
+    MAX_CALLS = 100
+
+    update_sql = text("""
+        UPDATE videos
+        SET title            = :title,
+            view_count       = :view_count,
+            duration_seconds = :duration_seconds
+        WHERE id = :id
+    """)
+
+    for i in range(0, len(video_ids), 50):
+        if call_count >= MAX_CALLS:
+            log.warning(f"Enrich: hit {MAX_CALLS}-call cap, stopping")
+            break
+
+        batch = video_ids[i:i + 50]
+        try:
+            resp = await client.get(
+                "https://www.googleapis.com/youtube/v3/videos",
+                params={
+                    "part": "snippet,statistics,contentDetails",
+                    "id": ",".join(batch),
+                    "key": API_KEY,
+                },
+                timeout=15.0,
+            )
+            call_count += 1
+
+            if resp.status_code == 403:
+                log.critical("Enrich: quota exceeded (403). Stopping.")
+                break
+            resp.raise_for_status()
+
+            items = resp.json().get("items", [])
+            with engine.begin() as conn:
+                for item in items:
+                    view_count_str = item.get("statistics", {}).get("viewCount")
+                    conn.execute(update_sql, {
+                        "id":               item["id"],
+                        "title":            item.get("snippet", {}).get("title") or "",
+                        "view_count":       int(view_count_str) if view_count_str else None,
+                        "duration_seconds": parse_duration(
+                            item.get("contentDetails", {}).get("duration") or ""
+                        ),
+                    })
+                    updated += 1
+
+        except Exception as exc:
+            log.warning(f"Enrich: batch {i // 50} failed: {exc}")
+
+    log.info(f"Enrich: updated {updated} videos in {call_count} API calls")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -361,7 +449,7 @@ async def main() -> None:
         if CHECKPOINT_FILE.exists():
             try:
                 completed = set(json.loads(CHECKPOINT_FILE.read_text()))
-                log.info(f"Resuming: {len(completed)}/100 searches already done")
+                log.info(f"Resuming: {len(completed)}/99 searches already done")
             except Exception:
                 completed = set()
 
@@ -369,7 +457,7 @@ async def main() -> None:
         rng = random.Random(str(date.today()))
         tasks = [
             (i, rng.choice(words), random_date_window())
-            for i in range(100)
+            for i in range(99)  # 99 searches × 100 units = 9900; leaves 100 for enrich
         ]
 
         quota_hit = False
@@ -387,7 +475,7 @@ async def main() -> None:
                         seeds.append(video)
                 completed.add(i)
                 CHECKPOINT_FILE.write_text(json.dumps(sorted(completed)))
-                if i < 99:
+                if i < 98:
                     await asyncio.sleep(1)
 
         CHECKPOINT_FILE.unlink(missing_ok=True)
@@ -395,6 +483,11 @@ async def main() -> None:
             log.warning(f"Quota exhausted after {len(seeds)} seeds.")
         else:
             log.info(f"API phase done: {api_new} new videos from {len(seeds)} seeds")
+
+        if not quota_hit:
+            async with httpx.AsyncClient() as client:
+                await enrich_videos(engine, client)
+
         return
 
     # Everything below only runs via: python collect.py --crawl-only

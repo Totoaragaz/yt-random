@@ -224,6 +224,7 @@
       box-shadow: 0 2px 20px rgba(200, 30, 30, 0.4), 0 1px 4px rgba(0,0,0,0.3);
       transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
       user-select: none;
+      white-space: nowrap;
     }
 
     .btn-next:hover:not(:disabled) {
@@ -316,8 +317,12 @@
       color: var(--text-dim);
     }
 
+    @media (min-width: 601px) and (max-width: 900px) {
+      body { justify-content: flex-start; padding-top: 48px; }
+    }
+
     @media (max-width: 600px) {
-      body { padding: 16px; }
+      body { padding: 16px; padding-top: 36px; justify-content: flex-start; }
       .logo { font-size: 3rem; }
       .below-player { flex-direction: column; align-items: flex-start; }
       .video-info { width: 100%; }
