@@ -444,9 +444,8 @@
       .btn-group { align-items: flex-start; width: 100%; }
       .btn-row { width: 100%; flex-wrap: wrap; }
       .btn-next { flex: 1; justify-content: center; }
+      .btn-break { display: block; flex-basis: 100%; height: 0; }
       .btn-yt, .btn-share { flex: 1; justify-content: center; }
-      .prev-label { display: none; }
-      .share-label { display: none; }
       .kbd-hint { display: none; }
       .subtitle { font-size: 1.15rem; }
       .btn-theme { top: 12px; right: 12px; }
@@ -520,6 +519,7 @@
             </svg>
             Next video
           </button>
+          <div class="btn-break"></div>
           <a class="btn-yt" id="btnYt"
              href="https://www.youtube.com/watch?v={{ video.id }}"
              target="_blank" rel="noopener noreferrer">
