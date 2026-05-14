@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ytrandom</title>
+  <title>YouTube Random</title>
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/static/favicon.ico" sizes="48x48">
   <link rel="icon" href="/static/favicon-96x96.png" sizes="96x96" type="image/png">
@@ -680,7 +680,7 @@
       );
       titleEl.textContent = decodeHTML(data.title || '');
       btnYt.href = `https://www.youtube.com/watch?v=${data.id}`;
-      document.title = decodeHTML(data.title) || 'ytrandom';
+      document.title = decodeHTML(data.title) || 'YouTube Random';
       history.replaceState({}, '', '/?v=' + data.id);
 
       if (data.language) {
