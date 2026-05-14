@@ -4,20 +4,93 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ytrandom</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/static/favicon.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/static/favicon-180.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:           #0c0909;
-      --surface:      #1a1212;
-      --border:       rgba(220, 40, 40, 0.22);
-      --accent:       #e03434;
-      --accent-hover: #f04444;
-      --accent-dim:   rgba(224, 52, 52, 0.12);
-      --text:         #f5f0f0;
-      --text-muted:   rgba(235, 215, 215, 0.65);
-      --text-dim:     rgba(235, 215, 215, 0.38);
+      --bg:               #0c0909;
+      --surface:          #1a1212;
+      --border:           rgba(220, 40, 40, 0.22);
+      --accent:           #e03434;
+      --accent-hover:     #f04444;
+      --accent-dim:       rgba(224, 52, 52, 0.12);
+      --text:             #f5f0f0;
+      --text-muted:       rgba(235, 215, 215, 0.65);
+      --text-dim:         rgba(235, 215, 215, 0.38);
+      --logo-color:       #fff;
+      --btn-bg:           rgba(255, 255, 255, 0.06);
+      --btn-border:       rgba(235, 215, 215, 0.25);
+      --btn-hover-bg:     rgba(255, 255, 255, 0.10);
+      --btn-hover-border: rgba(235, 215, 215, 0.40);
+      --kbd-bg:           rgba(255, 255, 255, 0.05);
+      --kbd-border:       rgba(255, 255, 255, 0.10);
+      --tag-color:        rgba(255, 160, 160, 0.95);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg:               #faf7f7;
+        --surface:          #ede8e8;
+        --border:           rgba(180, 30, 30, 0.20);
+        --accent:           #c42b2b;
+        --accent-hover:     #e03434;
+        --accent-dim:       rgba(180, 30, 30, 0.10);
+        --text:             #1a1010;
+        --text-muted:       rgba(30, 10, 10, 0.60);
+        --text-dim:         rgba(30, 10, 10, 0.35);
+        --logo-color:       #1a1010;
+        --btn-bg:           rgba(0, 0, 0, 0.05);
+        --btn-border:       rgba(30, 10, 10, 0.18);
+        --btn-hover-bg:     rgba(0, 0, 0, 0.09);
+        --btn-hover-border: rgba(30, 10, 10, 0.30);
+        --kbd-bg:           rgba(0, 0, 0, 0.06);
+        --kbd-border:       rgba(0, 0, 0, 0.12);
+        --tag-color:        rgba(140, 0, 0, 0.90);
+      }
+    }
+
+    [data-theme="dark"] {
+      --bg:               #0c0909;
+      --surface:          #1a1212;
+      --border:           rgba(220, 40, 40, 0.22);
+      --accent:           #e03434;
+      --accent-hover:     #f04444;
+      --accent-dim:       rgba(224, 52, 52, 0.12);
+      --text:             #f5f0f0;
+      --text-muted:       rgba(235, 215, 215, 0.65);
+      --text-dim:         rgba(235, 215, 215, 0.38);
+      --logo-color:       #fff;
+      --btn-bg:           rgba(255, 255, 255, 0.06);
+      --btn-border:       rgba(235, 215, 215, 0.25);
+      --btn-hover-bg:     rgba(255, 255, 255, 0.10);
+      --btn-hover-border: rgba(235, 215, 215, 0.40);
+      --kbd-bg:           rgba(255, 255, 255, 0.05);
+      --kbd-border:       rgba(255, 255, 255, 0.10);
+      --tag-color:        rgba(255, 160, 160, 0.95);
+    }
+
+    [data-theme="light"] {
+      --bg:               #faf7f7;
+      --surface:          #ede8e8;
+      --border:           rgba(180, 30, 30, 0.20);
+      --accent:           #c42b2b;
+      --accent-hover:     #e03434;
+      --accent-dim:       rgba(180, 30, 30, 0.10);
+      --text:             #1a1010;
+      --text-muted:       rgba(30, 10, 10, 0.60);
+      --text-dim:         rgba(30, 10, 10, 0.35);
+      --logo-color:       #1a1010;
+      --btn-bg:           rgba(0, 0, 0, 0.05);
+      --btn-border:       rgba(30, 10, 10, 0.18);
+      --btn-hover-bg:     rgba(0, 0, 0, 0.09);
+      --btn-hover-border: rgba(30, 10, 10, 0.30);
+      --kbd-bg:           rgba(0, 0, 0, 0.06);
+      --kbd-border:       rgba(0, 0, 0, 0.12);
+      --tag-color:        rgba(140, 0, 0, 0.90);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,6 +126,29 @@
     @keyframes glowPulse {
       0%, 100% { opacity: 0.7; transform: translateX(-50%) scaleY(1); }
       50%       { opacity: 1;   transform: translateX(-50%) scaleY(1.12); }
+    }
+
+    /* Theme toggle */
+    .btn-theme {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      z-index: 100;
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      border-radius: 8px;
+      color: var(--text);
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn-theme:hover {
+      background: var(--btn-hover-bg);
+      border-color: var(--btn-hover-border);
     }
 
     /* Page */
@@ -94,7 +190,7 @@
       font-size: clamp(2.6rem, 5.5vw, 4.5rem);
       font-weight: 700;
       letter-spacing: -0.05em;
-      color: #fff;
+      color: var(--logo-color);
       text-decoration: none;
       line-height: 1;
     }
@@ -103,21 +199,8 @@
     .subtitle {
       font-size: clamp(1rem, 1.8vw, 1.35rem);
       font-weight: 500;
-      color: #fff;
+      color: var(--logo-color);
       letter-spacing: 0.03em;
-    }
-
-    .pool-badge {
-      font-size: 0.7rem;
-      font-weight: 500;
-      color: var(--text-dim);
-      letter-spacing: 0.05em;
-      background: var(--accent-dim);
-      border: 1px solid rgba(220, 40, 40, 0.18);
-      padding: 4px 11px;
-      border-radius: 999px;
-      white-space: nowrap;
-      margin-bottom: 4px;
     }
 
     /* Player */
@@ -187,7 +270,7 @@
       border-radius: 999px;
       border: 1px solid rgba(220, 40, 40, 0.45);
       background: rgba(220, 40, 40, 0.15);
-      color: rgba(255, 160, 160, 0.95);
+      color: var(--tag-color);
     }
 
     .tag.hidden { display: none; }
@@ -255,8 +338,8 @@
       align-items: center;
       gap: 6px;
       color: var(--text);
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(235, 215, 215, 0.25);
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
       padding: clamp(10px, 1.2vw, 14px) clamp(14px, 1.6vw, 22px);
       border-radius: 8px;
       font-family: 'Space Grotesk', sans-serif;
@@ -269,8 +352,8 @@
     }
 
     .btn-prev:hover:not(:disabled) {
-      border-color: rgba(235, 215, 215, 0.4);
-      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--btn-hover-border);
+      background: var(--btn-hover-bg);
       transform: translateY(-1px);
     }
 
@@ -286,15 +369,40 @@
       font-weight: 600;
       padding: clamp(10px, 1.2vw, 14px) clamp(14px, 1.6vw, 22px);
       border-radius: 8px;
-      border: 1px solid rgba(235, 215, 215, 0.25);
-      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
       transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.1s;
       white-space: nowrap;
     }
 
     .btn-yt:hover {
-      border-color: rgba(235, 215, 215, 0.4);
-      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--btn-hover-border);
+      background: var(--btn-hover-bg);
+      transform: translateY(-1px);
+    }
+
+    /* Share button — same style as btn-yt but as a <button> */
+    .btn-share {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(0.82rem, 1.2vw, 1rem);
+      font-weight: 600;
+      padding: clamp(10px, 1.2vw, 14px) clamp(14px, 1.6vw, 22px);
+      border-radius: 8px;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.1s;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn-share:hover {
+      border-color: var(--btn-hover-border);
+      background: var(--btn-hover-bg);
       transform: translateY(-1px);
     }
 
@@ -310,8 +418,8 @@
     kbd {
       font-family: 'Space Grotesk', monospace;
       font-size: 0.6rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--kbd-bg);
+      border: 1px solid var(--kbd-border);
       border-radius: 4px;
       padding: 1px 5px;
       color: var(--text-dim);
@@ -337,12 +445,36 @@
       .btn-row { width: 100%; }
       .btn-next { flex: 1; justify-content: center; }
       .prev-label { display: none; }
+      .share-label { display: none; }
       .kbd-hint { display: none; }
       .subtitle { font-size: 1.15rem; }
+      .btn-theme { top: 12px; right: 12px; }
     }
   </style>
 </head>
 <body>
+
+  <button class="btn-theme" id="themeToggle" aria-label="Toggle theme">
+    <!-- Sun icon: shown in dark mode (click to go light) -->
+    <svg id="iconSun" width="16" height="16" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <!-- Moon icon: shown in light mode (click to go dark) -->
+    <svg id="iconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+    </svg>
+  </button>
+
   <div class="page">
 
     <header>
@@ -355,7 +487,7 @@
     <div class="player-shell" id="playerShell">
       <iframe
         id="videoFrame"
-        src="https://www.youtube.com/embed/{{ video.id }}?autoplay=1"
+        src="https://www.youtube.com/embed/{{ video.id }}?autoplay=1&enablejsapi=1"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen>
       </iframe>
@@ -398,6 +530,14 @@
             </svg>
             Watch on YouTube
           </a>
+          <button class="btn-share" id="btnShare">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
+            </svg>
+            <span class="share-label">Share</span>
+          </button>
         </div>
         <div class="kbd-hint"><kbd>←</kbd> prev &nbsp; <kbd>→</kbd> <kbd>Space</kbd> next</div>
       </div>
@@ -415,14 +555,15 @@
       fi:'Finnish', sk:'Slovak', bg:'Bulgarian', sr:'Serbian', ca:'Catalan',
     };
 
-    const shell   = document.getElementById('playerShell');
-    const frame   = document.getElementById('videoFrame');
-    const titleEl = document.getElementById('videoTitle');
-    const langTag = document.getElementById('langTag');
-    const yearTag = document.getElementById('yearTag');
-    const btnNext = document.getElementById('btnNext');
-    const btnPrev = document.getElementById('btnPrev');
-    const btnYt   = document.getElementById('btnYt');
+    const shell    = document.getElementById('playerShell');
+    const frame    = document.getElementById('videoFrame');
+    const titleEl  = document.getElementById('videoTitle');
+    const langTag  = document.getElementById('langTag');
+    const yearTag  = document.getElementById('yearTag');
+    const btnNext  = document.getElementById('btnNext');
+    const btnPrev  = document.getElementById('btnPrev');
+    const btnYt    = document.getElementById('btnYt');
+    const btnShare = document.getElementById('btnShare');
 
     let currentVideo = {
       id: '{{ video.id }}',
@@ -432,6 +573,9 @@
     };
     const videoHistory = [];
 
+    // Sync URL with the current video on page load
+    history.replaceState({}, '', '/?v=' + currentVideo.id);
+
     if (langTag && langTag.textContent.trim()) {
       const code = langTag.textContent.trim();
       langTag.textContent = LANG[code] || code;
@@ -440,15 +584,83 @@
     let busy = false;
     let prefetched = null;
 
+    // --- Theme toggle ---
+
+    const themeToggle = document.getElementById('themeToggle');
+    const iconSun  = document.getElementById('iconSun');
+    const iconMoon = document.getElementById('iconMoon');
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      iconSun.style.display  = theme === 'dark'  ? 'block' : 'none';
+      iconMoon.style.display = theme === 'light' ? 'block' : 'none';
+    }
+
+    function getSystemTheme() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    applyTheme(localStorage.getItem('theme') || getSystemTheme());
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || getSystemTheme();
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    });
+
+    // --- Helpers ---
+
     function decodeHTML(str) {
       const txt = document.createElement('textarea');
       txt.innerHTML = str;
       return txt.value;
     }
 
+    function getExcludeParam() {
+      const ids = videoHistory.map(v => v.id).concat([currentVideo.id]);
+      return '?exclude=' + ids.join(',');
+    }
+
+    // --- Share ---
+
+    btnShare.addEventListener('click', () => {
+      const label = btnShare.querySelector('.share-label');
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const orig = label ? label.textContent : '';
+        if (label) label.textContent = 'Copied!';
+        setTimeout(() => { if (label) label.textContent = orig; }, 2000);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = window.location.href;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      });
+    });
+
+    // --- YouTube error detection via postMessage ---
+
+    window.addEventListener('message', function(e) {
+      if (e.origin !== 'https://www.youtube.com') return;
+      try {
+        const msg = JSON.parse(e.data);
+        if (msg.event === 'infoDelivery' && msg.info && msg.info.error) {
+          const code = msg.info.error;
+          if ((code === 100 || code === 101 || code === 150) && !busy) {
+            setTimeout(loadNext, 1500);
+          }
+        }
+      } catch (_) {}
+    });
+
+    // --- Prefetch ---
+
     async function prefetch() {
       try {
-        const res = await fetch('/api/random');
+        const res = await fetch('/api/random' + getExcludeParam());
         prefetched = await res.json();
       } catch (e) {
         prefetched = null;
@@ -459,11 +671,16 @@
       btnPrev.disabled = videoHistory.length === 0;
     }
 
+    // --- Apply video to DOM ---
+
     function applyVideoToDOM(data) {
-      frame.contentWindow.location.replace(`https://www.youtube.com/embed/${data.id}?autoplay=1`);
+      frame.contentWindow.location.replace(
+        `https://www.youtube.com/embed/${data.id}?autoplay=1&enablejsapi=1`
+      );
       titleEl.textContent = decodeHTML(data.title || '');
       btnYt.href = `https://www.youtube.com/watch?v=${data.id}`;
       document.title = decodeHTML(data.title) || 'ytrandom';
+      history.replaceState({}, '', '/?v=' + data.id);
 
       if (data.language) {
         langTag.textContent = LANG[data.language] || data.language;
@@ -480,6 +697,8 @@
       }
     }
 
+    // --- Navigation ---
+
     async function loadNext() {
       if (busy) return;
       busy = true;
@@ -489,7 +708,7 @@
       shell.classList.add('out');
 
       try {
-        const data = prefetched ?? await fetch('/api/random').then(r => r.json());
+        const data = prefetched ?? await fetch('/api/random' + getExcludeParam()).then(r => r.json());
         prefetched = null;
         if (data.error) throw new Error(data.error);
 
