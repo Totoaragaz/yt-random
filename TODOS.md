@@ -1,59 +1,50 @@
 # TODOs
 
-## Setup requirements
+## Up next — Growth
 
-### cookies.txt is mandatory for the crawl phase
-`collect.py` requires a `cookies.txt` (Netscape format) at the project root. Without it the
-crawl phase aborts. YouTube rate-limits unauthenticated scraping aggressively; authenticated
-requests from a neutral account are stable.
+### SEO
+Add to index.html `<head>`:
+- `<title>ytrandom — random YouTube videos</title>`
+- Open Graph tags: `og:title`, `og:description`, `og:image` (static screenshot)
+- `<meta name="description" content="...">`
+- `robots.txt` and `sitemap.xml` (homepage only)
 
-Steps to refresh cookies:
-1. Sign into the YouTube account in Chrome
-2. Export with "Get cookies.txt LOCALLY" extension → save as `cookies.txt` in project root
-3. Cookies typically last weeks; re-export if the crawl starts failing with 429s again
+After SEO is live, make the GitHub repo private.
 
-The account should be neutral (minimal watch history) to avoid personalized recommendations
-skewing the crawled video pool.
+### Ko-fi support button
+Add a "Support me" link/button pointing to the Ko-fi page. Tasteful placement —
+footer or corner, not intrusive. No paywall, no gating — all features stay free.
 
-## Data quality
+### Filters (free feature)
+Add `?lang=ro`, `?before=2015`, `?after=2010`, `?min_views=`, `?max_duration=`
+query params to `/api/random`. Small filter bar on the frontend.
+- ~40% of videos have NULL language — treat NULL as "any" so those still surface
+- `duration_seconds` and `view_count` are now populated for all videos, so numeric
+  filters are ready to implement
+- Consider a "surprise me" default (no filters) as the landing state
 
-### duration_seconds and view_count are always NULL
-Every video in the DB has NULL for these two fields. They're not returned by `search.list`
-(only `snippet` part is fetched in the API phase), and the crawl phase only extracts
-title + video ID from the recommendations sidebar.
+---
 
-Fix options:
-- Add a separate daily enrichment step: batch-fetch up to 10,000 video IDs via `videos.list`
-  with `part=statistics,contentDetails` (costs 1 unit per call, 50 IDs per call = 200 calls
-  for 10,000 videos = 200 units). Run after collect.py.
-- Or: extract duration from the thumbnail overlay badge text (e.g. "8:01") during the crawl
-  phase — already available in the lockupViewModel, just not currently parsed.
+## Decisions made
 
-## Frontend
+### Ads — ruled out
+YouTube ToS Section 4 prohibits ads adjacent to the embedded player.
+Not pursuing AdSense or any ad placement.
 
-### Optional filters: language and upload date
-The random SELECT currently ignores all metadata. Add optional query parameters:
-- `?lang=ro` — filter to videos where `language = 'ro'`
-- `?before=2015` — filter to videos where `search_date_window < '2015-01-01'`
-- `?after=2010` — filter to videos where `search_date_window > '2010-01-01'`
+### Paywall — ruled out
+Filters and all other features will be free. Monetization is Ko-fi (voluntary).
 
-Implementation: add a small filter bar to the frontend, pass params to `/api/random`,
-modify `get_random_video()` to accept optional WHERE clauses.
+### Crawler — not needed
+Pool is large enough from the API search phase alone (~295 new videos/day).
+Crawl mode (`python collect.py --crawl-only`) remains in the codebase but
+is not used. If reintroduced later, use a `seeds.json` of ~100 manually
+curated videos across categories/languages/years instead of crawling from
+recommendations — prevents topical clustering.
 
-Note: language is NULL for ~40% of videos (short titles, low confidence). Filtering by
-language will miss those. Consider a "surprise me" default that ignores language.
+---
 
-### channel_id is NULL for all crawled videos
-The recommendations sidebar (lockupViewModel) doesn't expose channel_id directly — only
-video ID and title are extracted. API-phase videos have channel_id from the `snippet`.
-
-Fix: during the enrichment step described above (videos.list with statistics,contentDetails),
-also request `part=snippet` which includes `channelId`. One enrichment call covers
-duration, view_count, AND channel_id for all videos at once.
-
-## Performance
+## Backlog
 
 ### Intra-run seed deduplication
-Two API searches in the same run can return the same video ID. Both pass the DB pre-check
-and both get crawled. Rare at current scale (maybe 5-10/run), fix when measurable.
-One line: `seeds = list({v['id']: v for v in all_seeds}.values())` before the crawl phase.
+Two API searches in the same run can return the same video ID. Rare but fixable
+in one line before the DB upsert loop.
