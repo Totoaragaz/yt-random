@@ -701,9 +701,7 @@
     // --- Apply video to DOM ---
 
     function applyVideoToDOM(data) {
-      frame.contentWindow.location.replace(
-        `https://www.youtube.com/embed/${data.id}?autoplay=1&enablejsapi=1`
-      );
+      frame.src = `https://www.youtube.com/embed/${data.id}?autoplay=1&enablejsapi=1`;
       titleEl.textContent = decodeHTML(data.title || '');
       btnYt.href = `https://www.youtube.com/watch?v=${data.id}`;
       document.title = decodeHTML(data.title) || 'YouTube Random';
@@ -778,6 +776,12 @@
         updatePrevBtn();
       }, 300);
     }
+
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) {
+        frame.src = `https://www.youtube.com/embed/${currentVideo.id}?autoplay=1&enablejsapi=1`;
+      }
+    });
 
     btnNext.addEventListener('click', loadNext);
     btnPrev.addEventListener('click', loadPrev);
