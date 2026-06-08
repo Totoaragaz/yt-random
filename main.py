@@ -82,6 +82,11 @@ async def index(request: Request):
     )
 
 
+@app.get("/google519ec88911f9452b.html", response_class=PlainTextResponse)
+async def google_verify():
+    return "google-site-verification: google519ec88911f9452b.html"
+
+
 @app.get("/robots.txt", response_class=PlainTextResponse)
 async def robots():
     return """User-agent: *
