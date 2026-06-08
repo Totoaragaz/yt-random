@@ -2,7 +2,7 @@ import os
 import pathlib
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import create_engine, text
@@ -79,6 +79,30 @@ async def index(request: Request):
         request=request, name="index.html",
         context={"video": video, "video_count": get_video_count()},
         headers={"Cache-Control": "no-store"},
+    )
+
+
+@app.get("/robots.txt", response_class=PlainTextResponse)
+async def robots():
+    return """User-agent: *
+Allow: /
+
+Sitemap: https://ytrandom.com/sitemap.xml
+"""
+
+
+@app.get("/sitemap.xml")
+async def sitemap():
+    return Response(
+        content="""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ytrandom.com/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>""",
+        media_type="application/xml",
     )
 
 

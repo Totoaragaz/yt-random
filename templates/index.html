@@ -3,7 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Random</title>
+  <title>ytRandom — Random YouTube Video Player</title>
+  <meta name="description" content="Discover completely random YouTube videos from around the world. Any topic, language, or era — one click away.">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://ytrandom.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ytrandom.com/">
+  <meta property="og:title" content="ytRandom — Random YouTube Video Player">
+  <meta property="og:description" content="Discover completely random YouTube videos from around the world. Any topic, language, or era — one click away.">
+  <meta property="og:image" content="https://ytrandom.com/static/og.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ytRandom — Random YouTube Video Player">
+  <meta name="twitter:description" content="Discover completely random YouTube videos from around the world. Any topic, language, or era — one click away.">
+  <meta name="twitter:image" content="https://ytrandom.com/static/og.png">
+
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/static/favicon.ico" sizes="48x48">
   <link rel="icon" href="/static/favicon-96x96.png" sizes="96x96" type="image/png">
@@ -974,7 +992,7 @@
       frame.src = `https://www.youtube.com/embed/${data.id}?autoplay=1&enablejsapi=1`;
       titleEl.textContent = decodeHTML(data.title || '');
       btnYt.href = `https://www.youtube.com/watch?v=${data.id}`;
-      document.title = decodeHTML(data.title) || 'YouTube Random';
+      document.title = decodeHTML(data.title) || 'ytRandom — Random YouTube Video Player';
       history.replaceState({}, '', '/?v=' + data.id);
 
       if (data.language) {
