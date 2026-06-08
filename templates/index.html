@@ -409,6 +409,169 @@
       transform: translateY(-1px);
     }
 
+    /* Footer */
+    .site-footer {
+      margin-top: 4px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links,
+    .footer-legal {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.70rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      padding: 5px 8px;
+      border-radius: 5px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+
+    .footer-link:hover {
+      color: var(--text-muted);
+      background: var(--btn-hover-bg);
+    }
+
+    .footer-copy-text {
+      color: var(--text-dim);
+      font-size: 0.68rem;
+      padding: 5px 8px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .footer-copy-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-dim);
+      padding: 2px 3px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 3px;
+      transition: color 0.15s;
+    }
+
+    .footer-copy-btn:hover { color: var(--text-muted); }
+
+    /* Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 540px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 28px 32px;
+      position: relative;
+    }
+
+    .modal-box--sm { max-width: 380px; }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: color 0.15s;
+      line-height: 1;
+    }
+
+    .modal-close:hover { color: var(--text); }
+
+    .modal-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+      padding-right: 32px;
+    }
+
+    .modal-body {
+      font-size: 0.80rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .modal-body h3 {
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-top: 14px;
+      margin-bottom: 4px;
+    }
+
+    .modal-body p { margin-bottom: 8px; }
+    .modal-body a { color: var(--accent); text-decoration: none; }
+    .modal-body a:hover { text-decoration: underline; }
+
+    .contact-email-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      border-radius: 7px;
+    }
+
+    .contact-email {
+      flex: 1;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.01em;
+      user-select: all;
+    }
+
     .kbd-hint {
       font-size: 0.63rem;
       color: var(--text-dim);
@@ -452,6 +615,8 @@
       .kbd-hint { display: none; }
       .subtitle { font-size: 1.15rem; }
       .btn-theme { top: 12px; right: 12px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .modal-box { padding: 20px; }
     }
   </style>
 </head>
@@ -549,6 +714,111 @@
       </div>
     </div>
 
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-links">
+          <a href="https://ko-fi.com/totoaragaz" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;">
+            <img height="36" src="https://storage.ko-fi.com/cdn/kofi3.png?v=3" alt="Buy Me a Coffee at ko-fi.com" style="border:0;height:36px;display:block;"/>
+          </a>
+          <a class="footer-link" href="https://github.com/totoaragaz" target="_blank" rel="noopener noreferrer">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            GitHub
+          </a>
+          <button class="footer-link" id="btnContact">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            Contact
+          </button>
+        </div>
+        <div class="footer-legal">
+          <button class="footer-link" id="btnTerms">Terms</button>
+          <button class="footer-link" id="btnPrivacy">Privacy</button>
+          <span class="footer-copy-text">© 2026 ytRandom</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Contact modal -->
+  <div class="modal-overlay" id="modal-contact">
+    <div class="modal-box modal-box--sm">
+      <button class="modal-close" id="closeContact">✕</button>
+      <div class="modal-title">Get in touch</div>
+      <div class="modal-body">
+        <p>Found a bug, got a feature idea, or just want to say hi?</p>
+        <div class="contact-email-row">
+          <span class="contact-email">totovisan7@yahoo.com</span>
+          <button class="footer-copy-btn" id="btnCopyEmail" title="Copy email">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Terms of Service modal -->
+  <div class="modal-overlay" id="modal-terms">
+    <div class="modal-box">
+      <button class="modal-close" id="closeTerms">✕</button>
+      <div class="modal-title">Terms of Service</div>
+      <div class="modal-body">
+        <p>Last updated: June 2026</p>
+
+        <h3>1. About this service</h3>
+        <p>ytRandom is a free video discovery tool that surfaces random publicly available YouTube videos. By using this site, you agree to these terms.</p>
+
+        <h3>2. Content</h3>
+        <p>All videos are hosted on YouTube. We don't own, upload, or control any video content. By watching embedded videos you are subject to <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">YouTube's Terms of Service</a>.</p>
+
+        <h3>3. YouTube API Services</h3>
+        <p>This site uses the YouTube Data API Services. Your use of YouTube features via this site is also governed by <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a>.</p>
+
+        <h3>4. No warranty</h3>
+        <p>The service is provided "as is" with no guarantees about uptime, video availability, or fitness for any particular purpose.</p>
+
+        <h3>5. Limitation of liability</h3>
+        <p>We are not liable for the content of any video displayed, nor for any damages arising from your use of this site.</p>
+
+        <h3>6. Changes</h3>
+        <p>These terms may change at any time. Continued use of the site constitutes acceptance of any updates.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy modal -->
+  <div class="modal-overlay" id="modal-privacy">
+    <div class="modal-box">
+      <button class="modal-close" id="closePrivacy">✕</button>
+      <div class="modal-title">Privacy Policy</div>
+      <div class="modal-body">
+        <p>Last updated: June 2026</p>
+
+        <h3>What we collect</h3>
+        <p>Nothing. ytRandom does not collect, store, or process any personal information. There are no accounts and no registration.</p>
+
+        <h3>Local storage</h3>
+        <p>We store your theme preference (dark or light mode) in your browser's localStorage. This data never leaves your device and is never transmitted to us.</p>
+
+        <h3>YouTube</h3>
+        <p>Videos are embedded via YouTube's official API. When you watch a video, YouTube may collect data about your viewing activity as described in <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a>.</p>
+
+        <h3>Third parties</h3>
+        <p>We don't use analytics services, advertising networks, or any other third-party tracking.</p>
+
+        <h3>Contact</h3>
+        <p>Questions? Email <a href="mailto:totovisan7@yahoo.com">totovisan7@yahoo.com</a>.</p>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -788,6 +1058,11 @@
 
     document.addEventListener('keydown', e => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+        return;
+      }
+      if (document.querySelector('.modal-overlay.open')) return;
       if (e.key === ' ' || e.key === 'ArrowRight') {
         e.preventDefault();
         loadNext();
@@ -795,6 +1070,33 @@
         e.preventDefault();
         loadPrev();
       }
+    });
+
+    // --- Footer modals ---
+
+    const modalIds = ['contact', 'terms', 'privacy'];
+    modalIds.forEach(id => {
+      const cap = id.charAt(0).toUpperCase() + id.slice(1);
+      document.getElementById('btn' + cap).addEventListener('click', () =>
+        document.getElementById('modal-' + id).classList.add('open'));
+      document.getElementById('close' + cap).addEventListener('click', () =>
+        document.getElementById('modal-' + id).classList.remove('open'));
+    });
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) overlay.classList.remove('open');
+      });
+    });
+
+    // --- Copy email ---
+
+    const btnCopyEmail = document.getElementById('btnCopyEmail');
+    btnCopyEmail.addEventListener('click', () => {
+      navigator.clipboard.writeText('totovisan7@yahoo.com').catch(() => {});
+      btnCopyEmail.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+      setTimeout(() => {
+        btnCopyEmail.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`;
+      }, 2000);
     });
   </script>
 </body>
