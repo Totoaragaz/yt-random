@@ -850,7 +850,7 @@
     };
 
     const shell    = document.getElementById('playerShell');
-    const frame    = document.getElementById('videoFrame');
+    let frame      = document.getElementById('videoFrame');
     const titleEl  = document.getElementById('videoTitle');
     const langTag  = document.getElementById('langTag');
     const yearTag  = document.getElementById('yearTag');
@@ -989,7 +989,13 @@
     // --- Apply video to DOM ---
 
     function applyVideoToDOM(data) {
-      frame.src = `https://www.youtube.com/embed/${data.id}?autoplay=1&enablejsapi=1`;
+      const newFrame = document.createElement('iframe');
+      newFrame.id = 'videoFrame';
+      newFrame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      newFrame.allowFullscreen = true;
+      newFrame.src = `https://www.youtube.com/embed/${data.id}?autoplay=1&enablejsapi=1`;
+      frame.parentNode.replaceChild(newFrame, frame);
+      frame = newFrame;
       titleEl.textContent = decodeHTML(data.title || '');
       btnYt.href = `https://www.youtube.com/watch?v=${data.id}`;
       document.title = decodeHTML(data.title) || 'ytRandom — Random YouTube Video Player';
@@ -1067,7 +1073,13 @@
 
     window.addEventListener('pageshow', (e) => {
       if (e.persisted) {
-        frame.src = `https://www.youtube.com/embed/${currentVideo.id}?autoplay=1&enablejsapi=1`;
+        const newFrame = document.createElement('iframe');
+        newFrame.id = 'videoFrame';
+        newFrame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        newFrame.allowFullscreen = true;
+        newFrame.src = `https://www.youtube.com/embed/${currentVideo.id}?autoplay=1&enablejsapi=1`;
+        frame.parentNode.replaceChild(newFrame, frame);
+        frame = newFrame;
       }
     });
 
