@@ -15,28 +15,51 @@ pathlib.Path("static").mkdir(exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-def get_random_video(exclude: list[str] | None = None) -> dict | None:
+def get_random_video(
+    exclude: list[str] | None = None,
+    year_from: int | None = None,
+    year_to: int | None = None,
+    lang: str | None = None,
+    min_views: int | None = None,
+    max_views: int | None = None,
+) -> dict | None:
+    where_parts: list[str] = []
+    params: dict = {}
+
+    if exclude:
+        where_parts.append("id != ALL(:exclude)")
+        params["exclude"] = exclude
+    if lang == "__none__":
+        where_parts.append("language IS NULL")
+    elif lang:
+        where_parts.append("language = :lang")
+        params["lang"] = lang
+    if min_views is not None:
+        where_parts.append("view_count >= :min_views")
+        params["min_views"] = min_views
+    if max_views is not None:
+        where_parts.append("view_count <= :max_views")
+        params["max_views"] = max_views
+    if year_from is not None or year_to is not None:
+        where_parts.append("search_date_window IS NOT NULL")
+    if year_from is not None:
+        where_parts.append("LEFT(search_date_window, 4)::integer >= :year_from")
+        params["year_from"] = year_from
+    if year_to is not None:
+        where_parts.append("LEFT(search_date_window, 4)::integer <= :year_to")
+        params["year_to"] = year_to
+
+    where_clause = "WHERE " + " AND ".join(where_parts) if where_parts else ""
+    sql = f"""
+        SELECT id, title, channel_id, language, view_count, search_date_window
+        FROM videos
+        {where_clause}
+        ORDER BY RANDOM()
+        LIMIT 1
+    """
+
     with engine.connect() as conn:
-        if exclude:
-            row = conn.execute(
-                text("""
-                    SELECT id, title, channel_id, language, view_count, search_date_window
-                    FROM videos
-                    WHERE id != ALL(:exclude)
-                    ORDER BY RANDOM()
-                    LIMIT 1
-                """),
-                {"exclude": exclude}
-            ).fetchone()
-        else:
-            row = conn.execute(
-                text("""
-                    SELECT id, title, channel_id, language, view_count, search_date_window
-                    FROM videos
-                    ORDER BY RANDOM()
-                    LIMIT 1
-                """)
-            ).fetchone()
+        row = conn.execute(text(sql), params).fetchone()
     if not row:
         return None
     return {
@@ -115,7 +138,23 @@ async def sitemap():
 async def api_random(request: Request):
     exclude_param = request.query_params.get("exclude", "")
     exclude = [v for v in exclude_param.split(",") if v] or None
-    video = get_random_video(exclude=exclude)
+
+    year_from_str = request.query_params.get("year_from")
+    year_to_str   = request.query_params.get("year_to")
+    min_views_str = request.query_params.get("min_views")
+    lang          = request.query_params.get("lang") or None
+
+    max_views_str = request.query_params.get("max_views")
+
+    year_from = int(year_from_str) if year_from_str else None
+    year_to   = int(year_to_str)   if year_to_str   else None
+    min_views = int(min_views_str) if min_views_str else None
+    max_views = int(max_views_str) if max_views_str else None
+
+    video = get_random_video(
+        exclude=exclude, year_from=year_from, year_to=year_to,
+        lang=lang, min_views=min_views, max_views=max_views,
+    )
     if not video:
-        return {"error": "no videos yet"}
+        return {"error": "no_match"}
     return video

@@ -614,6 +614,270 @@
       color: var(--text-dim);
     }
 
+    /* Filter button */
+    .btn-filter {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(0.82rem, 1.2vw, 1rem);
+      font-weight: 600;
+      padding: clamp(10px, 1.2vw, 14px) clamp(14px, 1.6vw, 22px);
+      border-radius: 8px;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.1s;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn-filter:hover {
+      border-color: var(--btn-hover-border);
+      background: var(--btn-hover-bg);
+      transform: translateY(-1px);
+    }
+
+    .btn-filter.has-filters {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-filter .filter-dot {
+      display: none;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .btn-filter.has-filters .filter-dot { display: block; }
+
+    /* Filter panel */
+    .filter-panel {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 0.22s ease,
+                  padding 0.28s ease;
+      padding: 0 1px;
+    }
+
+    .filter-panel.open {
+      max-height: 400px;
+      opacity: 1;
+      padding: 1px;
+    }
+
+    .filter-panel-inner {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      padding: 18px 20px 16px;
+    }
+
+    .filter-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .filter-panel-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .filter-reset {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+
+    .filter-reset:hover { color: var(--accent); }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr;
+      gap: 8px 24px;
+      align-items: start;
+    }
+
+    .filter-group { display: flex; flex-direction: column; gap: 7px; }
+
+    .filter-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Dual range slider */
+    .range-wrapper {
+      position: relative;
+      height: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .range-track {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: var(--btn-border);
+      border-radius: 2px;
+    }
+
+    .range-fill {
+      position: absolute;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    .range-input {
+      position: absolute;
+      width: 100%;
+      height: 4px;
+      top: 0;
+      left: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      background: transparent;
+      pointer-events: none;
+      margin: 0;
+      padding: 0;
+      outline: none;
+    }
+
+    .range-input::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid var(--bg);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+      pointer-events: all;
+    }
+
+    .range-input::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid var(--bg);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+      pointer-events: all;
+    }
+
+    .range-input::-webkit-slider-runnable-track { background: transparent; }
+    .range-input::-moz-range-track { background: transparent; }
+
+    .range-value-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Filter selects */
+    .filter-select-wrap { position: relative; }
+
+    .filter-select {
+      width: 100%;
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      border-radius: 7px;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 8px 28px 8px 10px;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    .filter-select:hover { border-color: var(--btn-hover-border); background-color: var(--btn-hover-bg); }
+    .filter-select:focus { outline: none; border-color: var(--accent); }
+    .filter-select option { background: var(--surface); color: var(--text); }
+
+    .filter-note {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    .filter-error {
+      display: none;
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(220, 40, 40, 0.35);
+      background: rgba(220, 40, 40, 0.09);
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    .filter-error.visible { display: block; }
+
+    .views-filter-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .views-dir-sel {
+      width: auto;
+      flex-shrink: 0;
+    }
+
+    .filter-input {
+      flex: 1;
+      min-width: 0;
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      border-radius: 7px;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 8px 10px;
+      transition: border-color 0.15s;
+      -moz-appearance: textfield;
+    }
+
+    .filter-input::-webkit-outer-spin-button,
+    .filter-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .filter-input::placeholder { color: var(--text-dim); }
+    .filter-input:focus { outline: none; border-color: var(--accent); }
+
     @media (min-width: 601px) and (max-width: 900px) {
       body { justify-content: flex-start; padding-top: 48px; }
     }
@@ -634,12 +898,13 @@
       .btn-row { width: 100%; flex-wrap: wrap; }
       .btn-next { flex: 1; justify-content: center; }
       .btn-break { display: block; flex-basis: 100%; height: 0; }
-      .btn-yt, .btn-share { flex: 1; justify-content: center; }
+      .btn-yt, .btn-share, .btn-filter { flex: 1; justify-content: center; }
       .kbd-hint { display: none; }
       .subtitle { font-size: 1.15rem; }
       .btn-theme { top: 12px; right: 12px; }
       .footer-inner { flex-direction: column; align-items: flex-start; gap: 4px; }
       .modal-box { padding: 20px; }
+      .filter-grid { grid-template-columns: 1fr; gap: 12px; }
     }
   </style>
 </head>
@@ -727,8 +992,70 @@
             </svg>
             <span class="share-label">Share</span>
           </button>
+          <button class="btn-filter" id="btnFilter">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+              <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+              <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/>
+              <line x1="17" y1="16" x2="23" y2="16"/>
+            </svg>
+            Filters
+            <span class="filter-dot"></span>
+          </button>
         </div>
         <div class="kbd-hint"><kbd>←</kbd> prev &nbsp; <kbd>→</kbd> <kbd>Space</kbd> next</div>
+      </div>
+    </div>
+
+    <!-- Filter panel -->
+    <div class="filter-panel" id="filterPanel">
+      <div class="filter-panel-inner">
+        <div class="filter-panel-header">
+          <span class="filter-panel-title">Filters</span>
+          <button class="filter-reset" id="filterReset">Reset all</button>
+        </div>
+        <div class="filter-grid">
+          <!-- Year range -->
+          <div class="filter-group">
+            <label class="filter-label">Release year</label>
+            <div class="range-wrapper">
+              <div class="range-track">
+                <div class="range-fill" id="yearFill"></div>
+                <input type="range" class="range-input" id="yearMin" min="2005" max="2026" value="2005" step="1">
+                <input type="range" class="range-input" id="yearMax" min="2005" max="2026" value="2026" step="1">
+              </div>
+            </div>
+            <div class="range-value-row">
+              <span id="yearMinLabel">2005</span>
+              <span id="yearMaxLabel">2026</span>
+            </div>
+          </div>
+          <!-- Views -->
+          <div class="filter-group">
+            <label class="filter-label">Views</label>
+            <div class="views-filter-row">
+              <select class="filter-select views-dir-sel" id="viewsDir">
+                <option value="over">Over</option>
+                <option value="under">Under</option>
+              </select>
+              <input type="number" class="filter-input" id="viewsCount"
+                     min="0" step="1">
+            </div>
+          </div>
+          <!-- Language -->
+          <div class="filter-group">
+            <label class="filter-label" for="filterLangSel">Language</label>
+            <div class="filter-select-wrap">
+              <select class="filter-select" id="filterLangSel">
+                <option value="">Any language</option>
+              </select>
+            </div>
+            <div class="filter-note">Language detection is approximate — some videos may be mislabeled</div>
+          </div>
+        </div>
+        <div class="filter-error" id="filterError">No videos match these filters — try adjusting them</div>
       </div>
     </div>
 
@@ -849,6 +1176,9 @@
       fi:'Finnish', sk:'Slovak', bg:'Bulgarian', sr:'Serbian', ca:'Catalan',
     };
 
+    const YEAR_MIN  = 2005;
+    const YEAR_MAX  = new Date().getFullYear();
+
     const shell    = document.getElementById('playerShell');
     const titleEl  = document.getElementById('videoTitle');
     const langTag  = document.getElementById('langTag');
@@ -857,6 +1187,18 @@
     const btnPrev  = document.getElementById('btnPrev');
     const btnYt    = document.getElementById('btnYt');
     const btnShare = document.getElementById('btnShare');
+    const btnFilter     = document.getElementById('btnFilter');
+    const filterPanel   = document.getElementById('filterPanel');
+    const filterReset   = document.getElementById('filterReset');
+    const yearMin       = document.getElementById('yearMin');
+    const yearMax       = document.getElementById('yearMax');
+    const yearFill      = document.getElementById('yearFill');
+    const yearMinLabel  = document.getElementById('yearMinLabel');
+    const yearMaxLabel  = document.getElementById('yearMaxLabel');
+    const viewsDir      = document.getElementById('viewsDir');
+    const viewsCount    = document.getElementById('viewsCount');
+    const filterLangSel = document.getElementById('filterLangSel');
+    const filterError   = document.getElementById('filterError');
 
     let currentVideo = {
       id: '{{ video.id }}',
@@ -897,6 +1239,108 @@
     let busy = false;
     let prefetched = null;
 
+    // --- Filters ---
+
+    // Build language dropdown from LANG dict
+    Object.entries(LANG).sort((a, b) => a[1].localeCompare(b[1])).forEach(([code, name]) => {
+      const opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = name;
+      filterLangSel.appendChild(opt);
+    });
+    const unknownOpt = document.createElement('option');
+    unknownOpt.value = '__none__';
+    unknownOpt.textContent = 'Unknown language';
+    filterLangSel.appendChild(unknownOpt);
+
+    // Set dynamic year max
+    yearMin.max = YEAR_MAX;
+    yearMax.max = YEAR_MAX;
+
+    function syncRangeSlider() {
+      const lo = parseInt(yearMin.value);
+      const hi = parseInt(yearMax.value);
+      const pct = v => (v - YEAR_MIN) / (YEAR_MAX - YEAR_MIN) * 100;
+      yearFill.style.left  = pct(lo) + '%';
+      yearFill.style.right = (100 - pct(hi)) + '%';
+      yearMinLabel.textContent = lo;
+      yearMaxLabel.textContent = hi;
+    }
+
+    function hasActiveFilters() {
+      const viewsSet = viewsCount.value.trim() !== '' && !isNaN(parseInt(viewsCount.value));
+      return parseInt(yearMin.value) > YEAR_MIN ||
+             parseInt(yearMax.value) < YEAR_MAX ||
+             viewsSet ||
+             filterLangSel.value !== '';
+    }
+
+    function updateFilterBadge() {
+      btnFilter.classList.toggle('has-filters', hasActiveFilters());
+    }
+
+    function saveFilters() {
+      localStorage.setItem('ytFilters', JSON.stringify({
+        yearFrom:   parseInt(yearMin.value),
+        yearTo:     parseInt(yearMax.value),
+        viewsDir:   viewsDir.value,
+        viewsCount: viewsCount.value,
+        lang:       filterLangSel.value,
+      }));
+    }
+
+    function loadFilters() {
+      const saved = JSON.parse(localStorage.getItem('ytFilters') || 'null');
+      if (!saved) return;
+      yearMin.value       = Math.max(YEAR_MIN, Math.min(saved.yearFrom || YEAR_MIN, YEAR_MAX));
+      yearMax.value       = Math.max(YEAR_MIN, Math.min(saved.yearTo   || YEAR_MAX, YEAR_MAX));
+      viewsDir.value      = saved.viewsDir   || 'over';
+      viewsCount.value    = saved.viewsCount || '';
+      filterLangSel.value = saved.lang       || '';
+    }
+
+    function onFilterChange() {
+      if (parseInt(yearMin.value) > parseInt(yearMax.value)) {
+        yearMax.value = yearMin.value;
+      }
+      syncRangeSlider();
+      updateFilterBadge();
+      saveFilters();
+      filterError.classList.remove('visible');
+      prefetched = null;
+      setTimeout(prefetch, 100);
+    }
+
+    loadFilters();
+    syncRangeSlider();
+    updateFilterBadge();
+
+    // Dual range thumb z-index: last touched thumb floats on top
+    yearMin.addEventListener('pointerdown', () => { yearMin.style.zIndex = 3; yearMax.style.zIndex = 2; });
+    yearMax.addEventListener('pointerdown', () => { yearMax.style.zIndex = 3; yearMin.style.zIndex = 2; });
+
+    yearMin.addEventListener('input', onFilterChange);
+    yearMax.addEventListener('input', () => {
+      if (parseInt(yearMax.value) < parseInt(yearMin.value)) yearMin.value = yearMax.value;
+      onFilterChange();
+    });
+    viewsDir.addEventListener('change', onFilterChange);
+    viewsCount.addEventListener('change', onFilterChange);
+    filterLangSel.addEventListener('change', onFilterChange);
+
+    btnFilter.addEventListener('click', () => {
+      filterPanel.classList.toggle('open');
+    });
+
+    filterReset.addEventListener('click', () => {
+      yearMin.value       = YEAR_MIN;
+      yearMax.value       = YEAR_MAX;
+      viewsDir.value      = 'over';
+      viewsCount.value    = '';
+      filterLangSel.value = '';
+      onFilterChange();
+    });
+
     // --- Theme toggle ---
 
     const themeToggle = document.getElementById('themeToggle');
@@ -930,9 +1374,20 @@
       return txt.value;
     }
 
-    function getExcludeParam() {
+    function buildApiUrl() {
       const ids = videoHistory.map(v => v.id).concat([currentVideo.id]);
-      return '?exclude=' + ids.join(',');
+      const p = new URLSearchParams({ exclude: ids.join(',') });
+      const ymin = parseInt(yearMin.value);
+      const ymax = parseInt(yearMax.value);
+      if (ymin > YEAR_MIN) p.set('year_from', ymin);
+      if (ymax < YEAR_MAX) p.set('year_to', ymax);
+      const viewsVal = parseInt(viewsCount.value);
+      if (!isNaN(viewsVal) && viewsCount.value.trim() !== '') {
+        if (viewsDir.value === 'over') p.set('min_views', viewsVal);
+        else p.set('max_views', viewsVal);
+      }
+      if (filterLangSel.value) p.set('lang', filterLangSel.value);
+      return '/api/random?' + p.toString();
     }
 
     // --- Share ---
@@ -980,8 +1435,9 @@
 
     async function prefetch() {
       try {
-        const res = await fetch('/api/random' + getExcludeParam());
-        prefetched = await res.json();
+        const res = await fetch(buildApiUrl());
+        const data = await res.json();
+        prefetched = data.error ? null : data;
       } catch (e) {
         prefetched = null;
       }
@@ -994,6 +1450,7 @@
     // --- Apply video to DOM ---
 
     function applyVideoToDOM(data) {
+      filterError.classList.remove('visible');
       if (ytPlayer) ytPlayer.loadVideoById(data.id);
       titleEl.textContent = decodeHTML(data.title || '');
       btnYt.href = `https://www.youtube.com/watch?v=${data.id}`;
@@ -1029,9 +1486,13 @@
         if (videoForward.length > 0) {
           data = videoForward.pop();
         } else {
-          data = prefetched ?? await fetch('/api/random' + getExcludeParam()).then(r => r.json());
+          data = prefetched ?? await fetch(buildApiUrl()).then(r => r.json());
           prefetched = null;
-          if (data.error) throw new Error(data.error);
+          if (data.error) {
+            const err = new Error(data.error);
+            err.isFilterError = true;
+            throw err;
+          }
         }
 
         await new Promise(r => setTimeout(r, 300));
@@ -1044,7 +1505,13 @@
         shell.classList.remove('out');
         if (videoForward.length === 0) setTimeout(prefetch, 3000);
       } catch (e) {
-        window.location.href = '/';
+        shell.classList.remove('out');
+        if (e.isFilterError) {
+          filterError.classList.add('visible');
+          filterPanel.classList.add('open');
+        } else {
+          window.location.href = '/';
+        }
       } finally {
         busy = false;
         btnNext.disabled = false;
